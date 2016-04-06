@@ -59,11 +59,9 @@ class SQLite {
             let columnCount = sqlite3_column_count(self.statementPointer.pointee)
             
             for i in 0..<columnCount {
-                let row = Result.Row()
-                let value = String(cString: UnsafePointer(sqlite3_column_text(self.statementPointer.pointee, i)))
-                let columnName = String(cString: sqlite3_column_name(self.statementPointer.pointee, i))
-                
-                row.data[columnName] = value
+                let name = String(cString: UnsafePointer<CChar>(sqlite3_column_name(self.statementPointer.pointee, i)))
+                let value = String(cString: UnsafePointer<CChar>(sqlite3_column_text(self.statementPointer.pointee, i)))
+                row.data[name] = value
             }
             
             result.rows.append(row)
@@ -90,8 +88,8 @@ class SQLite {
             
             let row = Result.Row()
             for i in 0 ..< Int(columnCount) {
-                let value = String(values[i])
-                let column = String(columns[i])
+                let value = String(cString: UnsafePointer<CChar>(values[i]))
+                let column = String(cString: UnsafePointer<CChar>(columns[i]))
                 
                 row.data[column] = value
             }

@@ -2,21 +2,23 @@ import Fluent
 
 public class SQLiteDriver: Fluent.Driver {
     let database: SQLite!
-    public var databaseFilePath = "Database/main.sqlite"
+    public static var databaseFilePath = ""
     
     public init() throws {
-        self.database = try SQLite(path: self.databaseFilePath)
+        self.database = try SQLite(path: SQLiteDriver.databaseFilePath)
     }
     
     public func execute<T: Model>(query: Query<T>) throws -> [[String: Value]] {
         let sql = SQL(query: query)
+        let sqlStatement = sql.statement
         
         let results: [SQLite.Result.Row]
         do {
                 if sql.values.count > 0 {
                     var position = 1
-                    results = try self.database.execute(sql.statement) {
+                    results = try self.database.execute(sqlStatement) {
                         for value in sql.values {
+                            
                             if let int = value.int {
                                 try self.database.bind(Int32(int), position: position)
                             } else if let double = value.double {
