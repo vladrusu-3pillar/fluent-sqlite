@@ -1,7 +1,7 @@
 #if os(Linux)
-    import CSQLiteLinux
+	import CSQLiteLinux
 #else
-    import CSQLiteMac
+	import CSQLiteMac
 #endif
 
 let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
